@@ -21,12 +21,9 @@ class CalendarAPI:
                 creds = pickle.load(token)
         # If there are no (valid) credentials available, let the user log in.
         if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    'credentials.json', scopes)
-                creds = flow.run_local_server()
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'credentials.json', scopes)
+            creds = flow.run_local_server()
             # Save the credentials for the next run
             with open('token.pickle', 'wb') as token:
                 pickle.dump(creds, token)
@@ -93,8 +90,12 @@ if __name__ == "__main__":
     calendar = CalendarAPI()
 
     # イベント追加
-    event_id = calendar.add_event(event)
-    print(f"Event created with ID: {event_id}")
+    # event_id = calendar.add_event(event)
+    # print(f"Event created with ID: {event_id}")
     # イベント取得
     events = calendar.get_events()
     print(events)
+
+    # イベント削除
+    for event in events:
+        calendar.delete_event(event['id'])

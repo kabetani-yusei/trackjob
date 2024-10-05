@@ -31,18 +31,20 @@ class CalendarAPI:
 
     def get_events(self):
         now_utc = datetime.utcnow()
-        today_end_utc = now_utc.replace(hour=23, minute=59, second=59, microsecond=0)
-        weekday = now_utc.weekday()
-        one_week_ago_utc = (now_utc - timedelta(days=6)).replace(hour=0, minute=0, second=0, microsecond=0)
+    
+        # 1年前と1年後の日付を計算
+        time_start = now_utc - timedelta(days=365)  # 1年を365日として計算
+        time_end = now_utc + timedelta(days=365)    # 1年を365日として計算
 
-        one_week_ago_utc_iso = one_week_ago_utc.isoformat() + 'Z'
-        today_end_utc_iso = today_end_utc.isoformat() + 'Z'
+        # ISOフォーマットに変換し、'Z'を追加
+        time_start_str = time_start.isoformat() + 'Z'
+        time_end_str = time_end.isoformat() + 'Z'
 
         # イベントを取得
         events_result = self.service.events().list(
             calendarId='primary',
-            timeMin=one_week_ago_utc_iso,
-            timeMax=today_end_utc_iso,
+            timeMin=time_start_str,
+            timeMax=time_end_str,
             singleEvents=True,
             orderBy='startTime'
         ).execute()

@@ -2,12 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date  # datetimeモジュールから必要なクラスをインポート
 from dateutil import parser 
 import time
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from calendarapi import CalendarAPI
+import streamlit_calendar as st_calendar
 
 # カレンダーAPIのインスタンスを作成
 calendar = CalendarAPI()
@@ -66,20 +67,22 @@ if st.session_state.is_started:
         st.session_state.reset_input = True
         st.rerun()  # ページ再描画
 
-
-
-
-# カレンダーの表示
+# カレンダー表示のヘッダー
 st.markdown("##### カレンダーイベント (過去1週間)")
+
 events = calendar.get_events()
-if events:
-    for event in events:
-        try:
-            st.write(f"・ {event['summary']}: {event['start']} - {event['end']}")
-        except KeyError:
-            st.write(f"・ {event['summary']}: 終日")
-else:
-    st.write("過去1週間のイベントが見つかりませんでした。")
+print(events)
+for i, event in enumerate(events):
+    event['id'] = i + 1
+    event['start'] = event['start'].replace('Z', '')
+    event['end'] = event['end'].replace('Z', '')
+
+print(events)
+
+today = date.today()
+week_dates = [today - timedelta(days=i) for i in range(7)]
+cal = st_calendar.calendar(events=events, options={'initialView': 'timeGridWeek'})
+
 
 # 前日の睡眠時間の表示
 st.markdown("##### 睡眠時間")
@@ -127,7 +130,6 @@ if sleep_event:
     st.write(f"前日の睡眠時間: {start_str} から {end_str} まで（{int(hours)}時間 {int(minutes)}分）")
 else:
     st.write("睡眠情報が見つかりません。")
-
 
 # AIからの前日のfeedbackを表示
 st.markdown("##### AIからの前日のフィードバック")

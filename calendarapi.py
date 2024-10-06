@@ -31,10 +31,11 @@ class CalendarAPI:
 
     def get_events(self):
         now_utc = datetime.utcnow()
+        now_jst = now_utc + timedelta(hours=9)
     
         # 1年前と1年後の日付を計算
-        time_start = now_utc - timedelta(days=365)  # 1年を365日として計算
-        time_end = now_utc + timedelta(days=365)    # 1年を365日として計算
+        time_start = now_jst - timedelta(days=365)
+        time_end = now_jst + timedelta(days=365)
 
         # ISOフォーマットに変換し、'Z'を追加
         time_start_str = time_start.isoformat() + 'Z'
@@ -76,28 +77,3 @@ class CalendarAPI:
             print(f"Event with ID {event_id} deleted.")
         except Exception as e:
             print(f"An error occurred: {e}")
-
-if __name__ == "__main__":
-    # UTCでのイベント日時を指定
-    event = {
-        'summary': 'サンプルイベント',
-        'start': {
-            'dateTime': '2024-10-05T20:00:00Z',  # UTCで設定
-        },
-        'end': {
-            'dateTime': '2024-10-05T22:00:00Z',  # UTCで設定
-        },
-    }
-
-    calendar = CalendarAPI()
-
-    # イベント追加
-    # event_id = calendar.add_event(event)
-    # print(f"Event created with ID: {event_id}")
-    # イベント取得
-    events = calendar.get_events()
-    print(events)
-
-    # イベント削除
-    for event in events:
-        calendar.delete_event(event['id'])

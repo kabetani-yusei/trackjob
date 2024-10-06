@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
-from datetime import datetime, timedelta, date  # datetimeモジュールから必要なクラスをインポート
+from datetime import datetime, timedelta, date
 from dateutil import parser 
 import time
 from googleapiclient.discovery import build
@@ -38,46 +38,49 @@ if st.session_state.reset_input:
 doing_text = st.text_input(label='タスクを入力してください', key="task")
 
 # 開始ボタンの処理
-if not st.session_state.is_started:
+if not st.session_state.get("is_started", False):
     if doing_text:  # テキストが入力されている場合のみボタンを有効に
         if st.button("開始"):
-            st.session_state.start = datetime.utcnow()
+            st.session_state.start = datetime.utcnow() + timedelta(hours=9)
             st.session_state.is_started = True
             st.write(f"'{doing_text}' の開始時刻: {st.session_state.start}")
             st.rerun()  # ページ再描画
     else:
-        st.button("開始", disabled=True)  # テキストが空ならボタンは無効
+        st.button("開始", disabled=True)
 
 # 終了ボタンの処理
-if st.session_state.is_started:
+if st.session_state.get("is_started", False):
     start_time_formatted = st.session_state.start.strftime('%H:%M')
-    st.write(f"{doing_text} の開始時刻: {start_time_formatted}")
-    if st.button("終了"):
-        end = datetime.utcnow()
-        event = {
-            'summary': doing_text,
-            'start': {'dateTime': st.session_state.start.isoformat() + 'Z'},
-            'end': {'dateTime': end.isoformat() + 'Z'},
-        }
-        calendar.add_event(event)
 
-        # 状態をリセット
-        del st.session_state.start
-        st.session_state.is_started = False
-        st.session_state.reset_input = True
-        st.rerun()  # ページ再描画
+    col1, col2 = st.columns([1, 18])
+
+    with col1:
+        if st.button("終了"):
+            end = datetime.utcnow() + timedelta(hours=9)
+            event = {
+                'summary': doing_text,
+                'start': {'dateTime': st.session_state.start.isoformat() + 'Z'},
+                'end': {'dateTime': end.isoformat() + 'Z'},
+            }
+            calendar.add_event(event)
+
+            # 状態をリセット
+            del st.session_state.start
+            st.session_state.is_started = False
+            st.session_state.reset_input = True
+            st.rerun()  # ページ再描画
+
+    with col2:
+        st.write(f"タスク名: {doing_text}  開始時刻: {start_time_formatted}")
 
 # カレンダー表示のヘッダー
 st.markdown("##### カレンダーイベント (過去1週間)")
 
 events = calendar.get_events()
-print(events)
 for i, event in enumerate(events):
     event['id'] = i + 1
     event['start'] = event['start'].replace('Z', '')
     event['end'] = event['end'].replace('Z', '')
-
-print(events)
 
 today = date.today()
 week_dates = [today - timedelta(days=i) for i in range(7)]
@@ -88,7 +91,7 @@ cal = st_calendar.calendar(events=events, options={'initialView': 'timeGridWeek'
 st.markdown("##### 睡眠時間")
 
 # 前日の睡眠時間を探す
-yesterday = datetime.utcnow() - timedelta(days=1)
+yesterday = datetime.utcnow() + timedelta(hours=9) - timedelta(days=1)
 yesterday_start = yesterday.replace(hour=0, minute=0, second=0, microsecond=0).isoformat() + 'Z'
 yesterday_end = yesterday.replace(hour=23, minute=59, second=59, microsecond=0).isoformat() + 'Z'
 
@@ -106,7 +109,6 @@ sleep_event = None
 for event in events_yesterday:
     if 'summary' in event and event['summary'] == '睡眠':
         sleep_event = event
-        break
 
 if sleep_event:
     # sleep_start, sleep_end は datetime 形式または日付形式の文字列が入ると仮定

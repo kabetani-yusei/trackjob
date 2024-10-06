@@ -16,8 +16,12 @@ venv\Scripts\activate
 pip install -r requirements.txt
 
 4. credentials.jsonを同じディレクトリ上に配置する
-このurlを参考に同じディレクトリにcredentials.jsonを配置する
+このurlを参考に同じディレクトリにcredentials.jsonを配置する(名前を変更する必要あり)
 https://dev.classmethod.jp/articles/google-calendar-api-create-schedule/
 
-5. 実行する
+5. gemini apiの公式サイトを参考にapi keyを取得する
+取得したら.envファイルにGOOGLE_API_KEY = 取得したapikeyとして書き込む
+https://ai.google.dev/gemini-api/docs?hl=ja#:~:text=Gemini%20API%20%E3%81%AE%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%88%E3%82%AC%E3%82%A4%E3%83%89%20Gemini%20API%20%E3%81%A8%20Google,AI%20Studio%20%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%99%E3%82%8B%E3%81%A8%E3%80%81Google%20%E3%81%AE%E6%9C%80%E6%96%B0%E3%83%A2%E3%83%87%E3%83%AB%E3%82%92%E4%BD%BF%E3%81%84%E5%A7%8B%E3%82%81%E3%82%8B%E3%81%93%E3%81%A8%E3%81%8C%E3%81%A7%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82%20Gemini%20%E3%83%A2%E3%83%87%E3%83%AB%20%E3%83%95%E3%82%A1%E3%83%9F%E3%83%AA%E3%83%BC%E5%85%A8%E4%BD%93%E3%81%AB%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%81%A7%E3%81%8D%E3%80%81%E3%82%A2%E3%82%A4%E3%83%87%E3%82%A2%E3%82%92%E6%8B%A1%E5%BC%B5%E5%8F%AF%E8%83%BD%E3%81%AA%E5%AE%9F%E9%9A%9B%E3%81%AE%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AB%E5%A4%89%E6%8F%9B%E3%81%A7%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82
+
+6. 実行する
 streamlit run main.py

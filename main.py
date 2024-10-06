@@ -9,6 +9,13 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from calendarapi import CalendarAPI
 import streamlit_calendar as st_calendar
+import google.generativeai as genai
+import os
+from dotenv import load_dotenv
+
+#　環境変数の読み込み
+load_dotenv()
+GOOGLE_API_KEY=os.getenv('GOOGLE_API_KEY')
 
 # カレンダーAPIのインスタンスを作成
 calendar = CalendarAPI()
@@ -135,6 +142,34 @@ else:
 
 # AIからの前日のfeedbackを表示
 st.markdown("##### AIからの前日のフィードバック")
-feedback = "運動時間とか、空き時間とかからいい感じに生成させたい"
+def get_time(timezone): #timezone表記から時刻を取得
+    hour = timezone[11:13]
+    minute = timezone[14:16]
+    return f'{hour}時{minute}分'
+
+def generate_prompt(out):
+    prompt = "昨日は"
+    
+    if len(out) == 0:
+        prompt += "何もしませんでした。"
+
+    for event in out:
+        summary = event['summary']
+        start = get_time(event['start']['dateTime'])
+        end = get_time(event['end']['dateTime'])
+
+        prompt += f"{event['summary']}を{start}から{end}まで"
+
+    if len(out) != 0:
+        prompt += '行いました。'
+
+    prompt += 'この1日について、生活習慣の観点から400文字程度でレビューしてください。'
+
+    return prompt
+prompt = generate_prompt(events_yesterday)
+print(prompt)
+genai.configure(api_key=GOOGLE_API_KEY)
+model = genai.GenerativeModel("gemini-1.5-flash")
+feedback = model.generate_content(prompt)
 if feedback:
-    st.write(f"AIからのフィードバック: {feedback}")
+    st.write(f"AIからのフィードバック: {feedback.text}")

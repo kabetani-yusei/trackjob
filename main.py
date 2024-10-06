@@ -137,7 +137,14 @@ if sleep_event:
     minutes = remainder // 60
 
     # 結果を表示
-    st.write(f"前日の睡眠時間: {start_str} から {end_str} まで（{int(hours)}時間 {int(minutes)}分）")
+    col1, col2 = st.columns([20, 3])
+    with col1:
+        st.write(f"前日の睡眠時間: {start_str} から {end_str} まで（{int(hours)}時間 {int(minutes)}分）")
+    with col2:
+        if not int(hours) >= 8:
+            st.success("良好です")
+        else:
+            st.warning("睡眠時間が不足している恐れがあります")
 else:
     st.write("睡眠情報が見つかりません。")
 

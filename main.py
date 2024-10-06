@@ -141,7 +141,7 @@ if sleep_event:
     with col1:
         st.write(f"前日の睡眠時間: {start_str} から {end_str} まで（{int(hours)}時間 {int(minutes)}分）")
     with col2:
-        if not int(hours) >= 8:
+        if int(hours) >= 8:
             st.success("良好です")
         else:
             st.warning("睡眠時間が不足している恐れがあります")

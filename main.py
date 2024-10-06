@@ -86,6 +86,7 @@ st.markdown("##### カレンダーイベント (過去1週間)")
 events = calendar.get_events()
 for i, event in enumerate(events):
     event['id'] = i + 1
+    event['title'] = event['summary']
     event['start'] = event['start'].replace('Z', '')
     event['end'] = event['end'].replace('Z', '')
 
@@ -167,7 +168,6 @@ def generate_prompt(out):
 
     return prompt
 prompt = generate_prompt(events_yesterday)
-print(prompt)
 genai.configure(api_key=GOOGLE_API_KEY)
 model = genai.GenerativeModel("gemini-1.5-flash")
 feedback = model.generate_content(prompt)

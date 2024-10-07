@@ -1,4 +1,4 @@
-# beginners hachathon
+# beginners hackathon
 スケジュール詳細の見える化アプリ
 
 実行環境

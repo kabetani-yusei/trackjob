@@ -1,4 +1,4 @@
-# beginners hackathon
+# track job beginners hackathon 10/05~10/06 チームE
 スケジュール詳細の見える化アプリ
 
 実行環境

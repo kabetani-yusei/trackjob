@@ -1,6 +1,11 @@
 # track job beginners hackathon 10/05~10/06 チームE
 スケジュール詳細の見える化アプリ
 
+使用技術  
+- streamlit(pythonでフロントエンドもバックエンドも同時に書けるやつ）
+- Google calendar api
+- gemini api
+
 実行環境
 windows11
 python 3.9.10
